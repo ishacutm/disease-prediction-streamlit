@@ -1,3 +1,5 @@
+import os
+import subprocess
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -20,11 +22,15 @@ st.warning("⚠️ This system is for educational purposes only, not a medical d
 def load_model_components():
     """Load the trained model and preprocessing components"""
     try:
-        # Load model, scaler, and label encoder
-        model = pickle.load(open('logistic_model.pkl', 'rb'))
-        scaler = pickle.load(open('scaler.pkl', 'rb'))
-        label_encoder = pickle.load(open('label_encoder.pkl', 'rb'))
-        
+       # Train model if not already trained (for Streamlit Cloud)
+if not os.path.exists("logistic_model.pkl"):
+    subprocess.run(["python", "train_model.py"])
+
+# Load trained components
+model = pickle.load(open("logistic_model.pkl", "rb"))
+scaler = pickle.load(open("scaler.pkl", "rb"))
+label_encoder = pickle.load(open("label_encoder.pkl", "rb"))
+
         # Load dataset to get symptom columns
         df = pd.read_csv('final_clean_disease_dataset.csv')
         symptom_columns = [col for col in df.columns if col != 'Disease']
