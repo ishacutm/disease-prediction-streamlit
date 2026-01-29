@@ -17,16 +17,22 @@ st.title("🏥 AI-Based Disease Prediction System")
 st.warning("⚠️ This system is for educational purposes only, not a medical diagnosis. Please consult a healthcare professional for medical advice.")
 @st.cache_resource
 @st.cache_resource
+@st.cache_resource
 def load_model_components():
-    df = pd.read_csv("final_clean_disease_dataset.csv")
+    df = pd.read_csv("final_clean_disease_dataset(2).csv")
 
-    X = df.iloc[:, :-1]
+    # Convert all feature columns to numeric (VERY IMPORTANT)
+    X = df.iloc[:, :-1].apply(pd.to_numeric, errors="coerce").fillna(0)
     y = df.iloc[:, -1]
 
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
 
-    model = LogisticRegression(max_iter=2000)
+    # IMPORTANT: use liblinear solver
+    model = LogisticRegression(
+        solver="liblinear",
+        max_iter=2000
+    )
     model.fit(X, y_encoded)
 
     symptom_columns = X.columns.tolist()
