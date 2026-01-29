@@ -16,29 +16,15 @@ st.set_page_config(
 st.title("🏥 AI-Based Disease Prediction System")
 st.warning("⚠️ This system is for educational purposes only, not a medical diagnosis. Please consult a healthcare professional for medical advice.")
 @st.cache_resource
-@st.cache_resource
-@st.cache_resource
 def load_model_components():
+    model = pickle.load(open("logistic_model.pkl", "rb"))
+    scaler = pickle.load(open("scaler.pkl", "rb"))
+    label_encoder = pickle.load(open("label_encoder.pkl", "rb"))
+
     df = pd.read_csv("final_clean_disease_dataset.csv")
+    symptom_columns = [col for col in df.columns if col != "Disease"]
 
-    # Convert all feature columns to numeric (VERY IMPORTANT)
-    X = df.iloc[:, :-1].apply(pd.to_numeric, errors="coerce").fillna(0)
-    y = df.iloc[:, -1]
-
-    label_encoder = LabelEncoder()
-    y_encoded = label_encoder.fit_transform(y)
-
-    # IMPORTANT: use liblinear solver
-    model = LogisticRegression(
-        solver="liblinear",
-        max_iter=2000
-    )
-    model.fit(X, y_encoded)
-
-    symptom_columns = X.columns.tolist()
-
-    return model,scaler, label_encoder, symptom_columns
-
+    return model, scaler, label_encoder, symptom_columns
 
 # Load components
 model,scaler, label_encoder, symptom_columns = load_model_components()
