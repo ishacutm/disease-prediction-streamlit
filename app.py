@@ -17,9 +17,6 @@ st.title("🏥 AI-Based Disease Prediction System")
 st.warning("⚠️ This system is for educational purposes only, not a medical diagnosis. Please consult a healthcare professional for medical advice.")
 @st.cache_resource
 def load_model_components():
-    """Load the trained model and preprocessing components"""
-   @st.cache_resource
-def load_model_components():
     # Load dataset
     df = pd.read_csv("final_clean_disease_dataset.csv")
 
