@@ -23,7 +23,7 @@ def load_model_components():
     try:
         # Auto-train model on cloud if not present
         if not os.path.exists("logistic_model.pkl"):
-            subprocess.run(["python", "train_model.py"], check=True)
+            subprocess.run(["python3", "train_model.py"], check=True)
 
         # Load trained components
         model = pickle.load(open("logistic_model.pkl", "rb"))
