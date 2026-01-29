@@ -37,11 +37,11 @@ def load_model_components():
 
     symptom_columns = X.columns.tolist()
 
-    return model, label_encoder, symptom_columns
+    return model,scaler, label_encoder, symptom_columns
 
 
 # Load components
-model, label_encoder, symptom_columns = load_model_components()
+model,scaler, label_encoder, symptom_columns = load_model_components()
 
 # Main interface
 st.header("Select Your Symptoms")
