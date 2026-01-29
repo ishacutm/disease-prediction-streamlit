@@ -38,7 +38,6 @@ def load_model_components():
 
     symptom_columns = X.columns.tolist()
 
-    return model, scaler, label_encoder, symptom_columns
 
 # Load components
 model, scaler, label_encoder, symptom_columns = load_model_components()
