@@ -1,5 +1,3 @@
-import os
-import subprocess
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -20,26 +18,30 @@ st.warning("⚠️ This system is for educational purposes only, not a medical d
 @st.cache_resource
 def load_model_components():
     """Load the trained model and preprocessing components"""
-    try:
-        # Auto-train model on cloud if not present
-        if not os.path.exists("logistic_model.pkl"):
-            subprocess.run(["python3", "train_model.py"], check=True)
+   @st.cache_resource
+def load_model_components():
+    # Load dataset
+    df = pd.read_csv("final_clean_disease_dataset.csv")
 
-        # Load trained components
-        model = pickle.load(open("logistic_model.pkl", "rb"))
-        scaler = pickle.load(open("scaler.pkl", "rb"))
-        label_encoder = pickle.load(open("label_encoder.pkl", "rb"))
+    # Features = all columns except last
+    X = df.iloc[:, :-1]
+    y = df.iloc[:, -1]
 
-        # Load dataset to get symptom columns
-        df = pd.read_csv("final_clean_disease_dataset.csv")
-        symptom_columns = [col for col in df.columns if col != "Disease"]
+    # Encode target
+    label_encoder = LabelEncoder()
+    y_encoded = label_encoder.fit_transform(y)
 
-        return model, scaler, label_encoder, symptom_columns
+    # Scale features
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
 
-    except Exception as e:
-        st.error(f"Error loading model components: {e}")
-        st.stop()
+    # Train model directly
+    model = LogisticRegression(max_iter=2000)
+    model.fit(X_scaled, y_encoded)
 
+    symptom_columns = X.columns.tolist()
+
+    return model, scaler, label_encoder, symptom_columns
 
 # Load components
 model, scaler, label_encoder, symptom_columns = load_model_components()
