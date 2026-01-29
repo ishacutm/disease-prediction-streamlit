@@ -17,31 +17,29 @@ st.set_page_config(
 # Title and warning
 st.title("🏥 AI-Based Disease Prediction System")
 st.warning("⚠️ This system is for educational purposes only, not a medical diagnosis. Please consult a healthcare professional for medical advice.")
-
-@st.cache_resource
+ @st.cache_resource
 def load_model_components():
     """Load the trained model and preprocessing components"""
     try:
-       # Train model if not already trained (for Streamlit Cloud)
-if not os.path.exists("logistic_model.pkl"):
-    subprocess.run(["python", "train_model.py"])
+        # Auto-train model on cloud if not present
+        if not os.path.exists("logistic_model.pkl"):
+            subprocess.run(["python", "train_model.py"], check=True)
 
-# Load trained components
-model = pickle.load(open("logistic_model.pkl", "rb"))
-scaler = pickle.load(open("scaler.pkl", "rb"))
-label_encoder = pickle.load(open("label_encoder.pkl", "rb"))
+        # Load trained components
+        model = pickle.load(open("logistic_model.pkl", "rb"))
+        scaler = pickle.load(open("scaler.pkl", "rb"))
+        label_encoder = pickle.load(open("label_encoder.pkl", "rb"))
 
         # Load dataset to get symptom columns
-        df = pd.read_csv('final_clean_disease_dataset.csv')
-        symptom_columns = [col for col in df.columns if col != 'Disease']
-        
+        df = pd.read_csv("final_clean_disease_dataset.csv")
+        symptom_columns = [col for col in df.columns if col != "Disease"]
+
         return model, scaler, label_encoder, symptom_columns
-    except FileNotFoundError as e:
-        st.error(f"Required file not found: {e}")
-        st.stop()
+
     except Exception as e:
         st.error(f"Error loading model components: {e}")
         st.stop()
+
 
 # Load components
 model, scaler, label_encoder, symptom_columns = load_model_components()
