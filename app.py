@@ -16,31 +16,26 @@ st.set_page_config(
 st.title("🏥 AI-Based Disease Prediction System")
 st.warning("⚠️ This system is for educational purposes only, not a medical diagnosis. Please consult a healthcare professional for medical advice.")
 @st.cache_resource
+@st.cache_resource
 def load_model_components():
-    # Load dataset
     df = pd.read_csv("final_clean_disease_dataset.csv")
 
-    # Features = all columns except last
     X = df.iloc[:, :-1]
     y = df.iloc[:, -1]
 
-    # Encode target
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
 
-    # Scale features
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-
-    # Train model directly
     model = LogisticRegression(max_iter=2000)
-    model.fit(X_scaled, y_encoded)
+    model.fit(X, y_encoded)
 
     symptom_columns = X.columns.tolist()
 
+    return model, label_encoder, symptom_columns
+
 
 # Load components
-model, scaler, label_encoder, symptom_columns = load_model_components()
+model, label_encoder, symptom_columns = load_model_components()
 
 # Main interface
 st.header("Select Your Symptoms")
